@@ -5,21 +5,18 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.example.onepieceensiklopedia.model.OnePiece
 import com.example.onepieceensiklopedia.model.OnePieceData
 import com.example.onepieceensiklopedia.ui.theme.OnePieceEnsiklopediaTheme
 
@@ -29,55 +26,76 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             OnePieceEnsiklopediaTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    val dataUji = OnePieceData.listData[0]
-
-                    UjiCobaTampilan(
-                        title = dataUji.title,
-                        description = dataUji.description,
-                        imageRes = dataUji.photo,
-                        modifier = Modifier.padding(innerPadding)
-                    )
-                }
+                DaftarOnePieceScreen()
             }
         }
     }
 }
 
 @Composable
-fun UjiCobaTampilan(title: String, description: String, imageRes: Int, modifier: Modifier = Modifier) {
+fun DaftarOnePieceScreen() {
     Column(
-        modifier = modifier
+        modifier = Modifier
             .fillMaxSize()
-            .padding(16.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
+            .padding(24.dp)
+            .verticalScroll(rememberScrollState())
     ) {
         Text(
-            text = "Uji Coba Data One Piece",
+            text = "One Piece Encyclopedia",
             style = MaterialTheme.typography.headlineMedium,
-            modifier = Modifier.padding(bottom = 16.dp)
+            fontWeight = FontWeight.Bold,
+            modifier = Modifier.padding(bottom = 24.dp)
         )
 
+        OnePieceData.listData.forEach { item ->
+            DetailScreen(onePiece = item)
+            Spacer(modifier = Modifier.height(24.dp))
+        }
+    }
+}
+
+@Composable
+fun DetailScreen(onePiece: OnePiece) {
+    Column(modifier = Modifier.fillMaxWidth()) {
         Image(
-            painter = painterResource(id = imageRes),
-            contentDescription = title,
-            modifier = Modifier.size(250.dp)
+            painter = painterResource(id = onePiece.photo),
+            contentDescription = onePiece.title,
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(200.dp),
+            contentScale = ContentScale.Crop
         )
 
-        Spacer(modifier = Modifier.height(24.dp))
+        Spacer(modifier = Modifier.height(16.dp))
 
         Text(
-            text = title,
-            style = MaterialTheme.typography.headlineSmall,
-            color = MaterialTheme.colorScheme.primary
+            text = onePiece.title,
+            style = MaterialTheme.typography.headlineMedium,
+            fontWeight = FontWeight.Bold
         )
 
         Spacer(modifier = Modifier.height(8.dp))
 
         Text(
-            text = description,
-            style = MaterialTheme.typography.bodyMedium
+            text = onePiece.description,
+            style = MaterialTheme.typography.bodyLarge
         )
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        Button(
+            onClick = { },
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text("Lihat Selengkapnya")
+        }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun DaftarOnePiecePreview() {
+    OnePieceEnsiklopediaTheme {
+        DaftarOnePieceScreen()
     }
 }
